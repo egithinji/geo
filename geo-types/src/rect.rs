@@ -266,6 +266,7 @@ mod test {
 
     #[test]
     fn rect() {
+        panic!("force a test failure to verify bors is working");
         let rect = Rect::new((10, 10), (20, 20));
         assert_eq!(rect.min, Coordinate { x: 10, y: 10 });
         assert_eq!(rect.max, Coordinate { x: 20, y: 20 });
