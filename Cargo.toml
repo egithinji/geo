@@ -1,2 +1,5 @@
 [workspace]
 members = ["geo", "geo-types", "geo-postgis"]
+
+[patch.crates-io]
+proj = { git = "https://github.com/michaelkirk/proj.git", branch = "mkirk/network_feature" }
