@@ -228,6 +228,39 @@ impl<T: CoordinateType> Zero for Coordinate<T> {
     }
 }
 
+#[cfg(feature = "rstar")]
+// These are required for rstar RTree
+impl<T> ::rstar::Point for Coordinate<T>
+where
+    T: ::num_traits::Float + ::rstar::RTreeNum,
+{
+    type Scalar = T;
+
+    const DIMENSIONS: usize = 2;
+
+    fn generate(generator: impl Fn(usize) -> Self::Scalar) -> Self {
+        Coordinate {
+            x: generator(0),
+            y: generator(1),
+        }
+    }
+
+    fn nth(&self, index: usize) -> Self::Scalar {
+        match index {
+            0 => self.x,
+            1 => self.y,
+            _ => unreachable!(),
+        }
+    }
+    fn nth_mut(&mut self, index: usize) -> &mut Self::Scalar {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => unreachable!(),
+        }
+    }
+}
+
 #[cfg(test)]
 impl<T: CoordinateType + AbsDiffEq> AbsDiffEq for Coordinate<T>
 where

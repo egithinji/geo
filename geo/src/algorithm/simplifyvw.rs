@@ -374,15 +374,20 @@ where
 }
 
 /// is p1 -> p2 -> p3 wound counterclockwise?
-fn ccw<T>(p1: Point<T>, p2: Point<T>, p3: Point<T>) -> bool
+fn ccw<T>(p1: Coordinate<T>, p2: Coordinate<T>, p3: Coordinate<T>) -> bool
 where
     T: Float,
 {
-    (p3.y() - p1.y()) * (p2.x() - p1.x()) > (p2.y() - p1.y()) * (p3.x() - p1.x())
+    (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x)
 }
 
 /// checks whether line segments with p1-p4 as their start and endpoints touch or cross
-fn cartesian_intersect<T>(p1: Point<T>, p2: Point<T>, p3: Point<T>, p4: Point<T>) -> bool
+fn cartesian_intersect<T>(
+    p1: Coordinate<T>,
+    p2: Coordinate<T>,
+    p3: Coordinate<T>,
+    p4: Coordinate<T>,
+) -> bool
 where
     T: Float,
 {
@@ -406,17 +411,15 @@ where
         orig[triangle.right],
     )
     .bounding_rect();
-    let br = Point::new(bounding_rect.min().x, bounding_rect.min().y);
-    let tl = Point::new(bounding_rect.max().x, bounding_rect.max().y);
+    let br = bounding_rect.min();
+    let tl = bounding_rect.max();
     tree.locate_in_envelope_intersecting(&rstar::AABB::from_corners(br, tl))
         .any(|c| {
-            // triangle start point, end point
-            let (ca, cb) = c.points();
-            ca.0 != point_a
-                && ca.0 != point_c
-                && cb.0 != point_a
-                && cb.0 != point_c
-                && cartesian_intersect(ca, cb, Point(point_a), Point(point_c))
+            c.start != point_a
+                && c.start != point_c
+                && c.end != point_a
+                && c.end != point_c
+                && cartesian_intersect(c.start, c.end, point_a, point_c)
         })
 }
 
